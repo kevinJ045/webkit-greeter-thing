@@ -4,7 +4,6 @@ import { React } from "rayous/react";
 import { SessionIcons, getCurrentSesssion, isCurrentSession, setCurrentSession } from "./sessions";
 import { getCurrentUser, isCurrentUser, setCurrentUser } from "./user";
 
-
 export default class extends Component {
 	static updateMode: "reinit" | "refresh" = "refresh";
 
@@ -30,7 +29,7 @@ export default class extends Component {
 
 									setCurrentUser(active.name);
 
-								}} id={"user-"+user.name} uname={user.name} attr={{'style':'--icon: url('+user.image+')'}} class={`user user-${user.name} ${isCurrentUser(user.name) ? 'active' : ''}`}>
+								}} id={"user-"+user.name} uname={user.name} class={`user user-${user.name} ${isCurrentUser(user.name) ? 'active' : ''}`}>
 									<Text class="name">{user.name}</Text>
 								</Container>
 							}
@@ -84,13 +83,17 @@ export default class extends Component {
 	}
 
 	afterBuild(props: buildProps): void {
-		lightdm.cancel_timed_login ();
+		// lightdm.cancel_timed_login ();
 
 		const passwdW = props.page.find('#password');
 		const cursor = passwdW.find('.cursor');
 		const passwordChars = new ArrayController([]);
 		let lastValue = "";
 
+		window.authentication_complete = function(){
+			if (lightdm.is_authenticated) lightdm.login (lightdm.authentication_user, getCurrentSesssion());
+			else passwdW.addClass('error');
+		}
 
 		Widget.from(document.body).on('keyup', (e: WidgetEvent) => {
 
@@ -102,9 +105,6 @@ export default class extends Component {
 				try{
 					lightdm.start_authentication(getCurrentUser());
 					lightdm.provide_secret(passwordChars.get().join(""));
-
-					if (lightdm.is_authenticated) lightdm.login (lightdm.authentication_user, getCurrentSesssion());
-					else passwdW.addClass('error');
 				} catch(e){
 					alert(e.toString());
 				}
