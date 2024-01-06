@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root{
+	--base: #1e1e2e;
+	--mantle: #181825;
+	--crust: #11111b;
+	--overlay: #6c7086;
+	--text: #cdd6f4;
+	--red: #f38ba8;
+}
+
+body{
+	background: var(--base);
+	color: var(--text);
+	font-family: 'Inter', sans-serif;
+	margin: 0;
+	user-select: none;
+}
+
+.password{
+	width: clamp(50%, 300px, 80%);
+	height: 40px;
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	left: 50%;
+	color: var(--text);
+	display: flex;
+	flex-wrap: nowrap;
+
+	overflow-x: auto;
+	overflow-y: hidden;
+
+	.char{
+		width: 40px;
+		
+		&::before{
+			content: "*";
+			display: inline-block;
+			font-size: 36;
+			font-weight: 900;
+			animation: .5s 1 slideInUp;
+		}
+	}
+
+	.cursor{
+		position: absolute;
+		display: block;
+		background: currentColor;
+		width: 40px;
+		height: 5px;
+		top: 35px;
+		animation: blink 1s infinite alternate;
+		transition: .5s;
+	}
+
+	#password-input{
+		opacity: 0;
+		position: absolute;
+	}
+
+	&.error{
+		color: var(--red);
+		.cursor{
+			animation: none;
+		}
+	}
+}
+
+@keyframes blink {
+	from{
+		opacity: 0;
+	}
+	to{
+		opacity: 1;
+	}
+}
+
+@keyframes slideInUp{
+	from{
+		margin-top: 40px;
+	}
+	to{
+		margin-top: 0;
+	}
+}
+
+@mixin switchable(){
+	width: 40px;
+	height: 40px;
+	border-radius: 12px;
+	border: 1px solid var(--crust);
+	display: none;
+	background: var(--mantle);
+	cursor: pointer;
+	justify-content: center;
+	align-items: center;
+	transition: .7s;
+	width: 140px;
+
+	&.active{
+		display: flex;
+	}
+
+	&::before{
+		margin: -4px 0 0 -4px;
+		content: "";
+		width: 25px;
+		height: 25px;
+		display: block;
+		background: var(--icon);
+		background-size: cover;
+		transition: .2s;
+	}
+
+	.name{
+		width: auto;
+		transition: .2s;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		font-weight: 700;
+	}
+
+	&:hover{
+		.name{
+			width: auto;
+		}
+		width: 140px;
+		gap: 10px;
+	}
+
+	&:active{
+		.name{
+			opacity: .2;
+		}
+
+		&::before{
+			scale: .2;
+		}
+	}
+}
+
+.sessions {
+	position: fixed;
+	right: 10px;
+	top: 10px;
+
+	.session{
+		@include switchable();
+		width: 40px;
+
+		.name{
+			width: 0;
+		}
+	}
+}
+
+.users {
+	position: fixed;
+	left: -20px;
+	top: 15px;
+
+	.user{
+		gap: 10px;
+		@include switchable();
+	}
+}
+
+
+.clock{
+	position: absolute;
+	top: 20%;
+	font-size: 72px;
+	left: 50%;
+	font-weight: 700;
+	transform: translate(-50%, 0);
+}
+
+.footer{
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 20px;
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+	padding: 20px 0;
+	font-weight: 700;
+
+	.sep{
+		height: 20px;
+		width: 2px;
+		background-color: var(--crust);
+	}
+
+	.info-group{
+		display: flex;
+		gap: 10px;
+		text-transform: uppercase;
+
+		.label{
+			color: var(--overlay);
+		}
+	}
+
+	.off-button{
+		background: var(--red);
+		width: 20px;
+		height: 20px;
+		border-radius: 20px;
+		cursor: pointer;
+		border: 4px solid var(--base);
+		outline: 0px solid var(--red);
+		transition: .3s;
+
+		&:hover{
+			width: 30px;
+			height: 30px;
+			margin-top: -5px;
+			outline-width: 4px;
+			margin-bottom:  10px;
+		}
+	}
+}
